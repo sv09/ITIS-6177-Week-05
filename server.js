@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const axios = require('axios');
 const app = express();
 const port = 3000;
 
@@ -493,6 +494,26 @@ app.patch('/api/company/:id', async function(req, res){
 	}finally{
 		if(conn) return conn.release();
 	}*/
+});
+
+
+app.get('/api/say', (req, res) => {
+	param = req.query.keyword;
+	//console.log(param);
+	if(!param){	
+		param='';	//so as to not display 'undefined'
+	}
+	axios(
+		{
+			method: 'get',
+			url: `https://us-east1-idyllic-root-296404.cloudfunctions.net/function-say?keyword=${param}`
+		}
+	).then((response) => {
+		res.send(response.data);
+		//console.log(response);
+	}).catch((err) => {
+		throw err;
+	});
 });
 
 app.listen(port, () => {
